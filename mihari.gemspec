@@ -3,7 +3,11 @@
 lib = File.expand_path("lib", __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
-require "mihari/version"
+begin
+  require "mihari/version"
+rescue LoadError
+  nil
+end
 
 def ci_env?
   # CI=true in GitHub Actions
@@ -12,7 +16,11 @@ end
 
 Gem::Specification.new do |spec|
   spec.name = "mihari"
-  spec.version = Mihari::VERSION
+  spec.version = begin
+    Mihari::VERSION
+  rescue
+    "0.0.0"
+  end
   spec.authors = ["Manabu Niseki"]
   spec.email = ["manabu.niseki@gmail.com"]
 
@@ -72,6 +80,7 @@ Gem::Specification.new do |spec|
     spec.add_development_dependency "solargraph", "~> 0.58.2"
   end
 
+  spec.add_dependency "git-version-bump", "0.19.1"
   spec.add_dependency "activerecord", "8.1.2"
   spec.add_dependency "addressable", "~> 2.8"
   spec.add_dependency "anyway_config", "2.8.0"
